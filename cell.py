@@ -1,3 +1,5 @@
+import random
+
 from graphics import Window, Line, Point
 
 
@@ -12,6 +14,7 @@ class Cell:
         self.__y1 = -1
         self.__x2 = -1
         self.__y2 = -1
+        self.visited = False
         self.__win = window
 
     def draw(self, x1: int, y1: int, x2: int, y2: int):
