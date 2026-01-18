@@ -13,8 +13,8 @@ class Maze:
         y1: int,
         num_rows: int,
         num_cols: int,
-        cell_size_x: int,
-        cell_size_y: int,
+        cell_size_x: float,
+        cell_size_y: float,
         win: Window | None = None,
         seed: int | float | str | bytes | bytearray | None = None,
     ):
@@ -22,8 +22,8 @@ class Maze:
         self.__y1: int = y1
         self.__num_rows: int = num_rows
         self.__num_cols: int = num_cols
-        self.__cell_size_x: int = cell_size_x
-        self.__cell_size_y: int = cell_size_y
+        self.__cell_size_x: float = cell_size_x
+        self.__cell_size_y: float = cell_size_y
         self.__win: Window = win
         self.__cells: list[list[Cell]] = []
         self.__create_cells()
@@ -138,3 +138,77 @@ class Maze:
         for col in self.__cells:
             for cell in col:
                 cell.visited = False
+
+    def solve(self):
+        maze_is_solved = self.__solve_r(0, 0)
+        return maze_is_solved
+
+    def __solve_r(self, i: int, j: int):
+        # Call the _animate method
+        self.__animate()
+
+        # Mark the current cell as visited
+        self.__cells[i][j].visited = True
+
+        # If you are at the "end" cell (the goal) then return True
+        if i == self.__num_cols - 1 and j == self.__num_rows - 1:
+            return True
+
+        # For each direction:
+        # left, right, down, up
+        directions = [(i - 1, j), (i + 1, j), (i, j + 1), (i, j - 1)]
+        for direction in directions:
+            i_new = direction[0]
+            j_new = direction[1]
+            # If there is a cell in that direction
+            # there is no wall blocking you
+            # and that cell has not been visited:
+            cell_exists: bool = True
+            cell_blocked_by_wall: bool = False
+            cell_has_been_visited: bool = False
+            try:
+                cell = self.__cells[i_new][j_new]
+                cell_exists = True
+                cell_has_been_visited = cell.visited
+                if i_new == i - 1 and j_new == j:  # left
+                    cell_blocked_by_wall = (
+                        True
+                        if cell.has_right_wall and self.__cells[i][j].has_left_wall
+                        else False
+                    )
+                if i_new == i + 1 and j_new == j:  # right
+                    cell_blocked_by_wall = (
+                        True
+                        if cell.has_left_wall and self.__cells[i][j].has_right_wall
+                        else False
+                    )
+
+                if i_new == i and j_new == j + 1:  # down
+                    cell_blocked_by_wall = (
+                        True
+                        if self.__cells[i][j].has_bottom_wall and cell.has_top_wall
+                        else False
+                    )
+
+                if i_new == i and j_new == j - 1:  # up
+                    cell_blocked_by_wall = (
+                        True
+                        if self.__cells[i][j].has_top_wall and cell.has_bottom_wall
+                        else False
+                    )
+            except IndexError:
+                cell_exists = False
+
+            if cell_exists and not cell_blocked_by_wall and not cell_has_been_visited:
+                # Draw a move between the curent cell and that cell
+                self.__cells[i][j].draw_move(self.__cells[i_new][j_new])
+                # Call __solve_r recursively to move to that cell
+                maze_is_solved = self.__solve_r(i_new, j_new)
+                # If the cell returns True, then just return True and don't worry about the other directions
+                if maze_is_solved:
+                    return True
+                # Otherwise, draw an "undo" move between the current cell and the next cell
+                self.__cells[i][j].draw_move(self.__cells[i_new][j_new], undo=True)
+
+        # If none of the directions worked out, return False
+        return False
