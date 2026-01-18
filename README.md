@@ -1,5 +1,9 @@
 # Maze Solver
 
+<p align="center">
+  <img src="maze_solver_demo.gif" alt="Maze Solver Demo">
+</p>
+
 A visual maze generator and solver built in Python with an animated GUI. Watch as the program generates a random maze using recursive depth-first search, then solves it using recursive backtracking!
 
 ![Maze Solver Demo](https://img.shields.io/badge/python-3.14+-blue.svg)
