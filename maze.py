@@ -31,6 +31,7 @@ class Maze:
         if not seed == None:
             random.seed(seed)
         self.__break_walls_r(0, 0)
+        self.__reset_cells_visited()
 
     def __create_cells(self):
         for i in range(self.__num_cols):
@@ -132,3 +133,8 @@ class Maze:
 
             # Move to the chosen cell by recursively calling __break_walls_r
             self.__break_walls_r(i_new, j_new)
+
+    def __reset_cells_visited(self):
+        for col in self.__cells:
+            for cell in col:
+                cell.visited = False
