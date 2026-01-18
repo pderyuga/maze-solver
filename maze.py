@@ -25,6 +25,7 @@ class Maze:
         self.__win: Window = win
         self.__cells: list[list[Cell]] = []
         self.__create_cells()
+        self.__break_entrance_and_exit()
 
     def __create_cells(self):
         for i in range(self.__num_cols):
@@ -57,3 +58,11 @@ class Maze:
         self.__win.redraw()
         # Sleep for a short amount of time (0.05 sec) so that we can see the animation
         time.sleep(0.05)
+
+    def __break_entrance_and_exit(self):
+        # Remove the top wall of the top-left cell by setting has_top_wall = False (the entrance)
+        self.__cells[0][0].has_top_wall = False
+        self.__draw_cell(0, 0)
+        # Remove the bottom wall of the bottom-right cell (the exit)
+        self.__cells[self.__num_cols - 1][self.__num_rows - 1].has_bottom_wall = False
+        self.__draw_cell(self.__num_cols - 1, self.__num_rows - 1)
