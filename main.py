@@ -1,13 +1,13 @@
-from graphics import Window, Point, Line
+from graphics import Window, Cell
 
 
 def main():
-    print("Hello from maze-solver!")
     win = Window(800, 600)
-    point1 = Point(0, 0)
-    point2 = Point(100, 100)
-    line = Line(point1, point2)
-    win.draw_line(line, fill_color="red")
+
+    cell = Cell(win)
+    cell.has_right_wall = False
+    cell.draw(50, 50, 100, 100)
+
     win.wait_for_close()
 
 
